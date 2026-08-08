@@ -81,4 +81,4 @@ pip install -r requirements.txt
 
 ## Limitations
 
-This implementation is primarily educational rather than production-oriented. It currently focuses on binary classification and CPU-based NumPy computation, without GPU acceleration or the optimisation and numerical safeguards found in established machine-learning frameworks.
+This implementation is purely educational, rather than production-oriented. Hence, it lacks GPU acceleration or the optimisation and numerical safeguards found in established machine-learning frameworks, instead focusing solely on being digestible to learners.
