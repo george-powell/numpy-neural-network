@@ -51,7 +51,7 @@ The experiment measures:
 * Accuracy standard deviation across folds
 * Final test accuracy
 
-This demonstration of how optimiser choice can affect neural network training and performance illustrates how parameters can be compared in a controlled manner in order to determine the optimal architecture of a network specific to a dataset. 
+This demonstration of how optimiser choice can affect neural network training and performance illustrates how parameters can be compared in a controlled manner in order to determine the appropriate architecture of a network specific to a dataset. 
 
 The experiment also demonstrates the network's ability to perform **multi-class classification** with an **arbitrary number of output neurons**, using a three-neuron softmax output layer and categorical cross-entropy. 
 
