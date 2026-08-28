@@ -10,12 +10,17 @@ for selecting activation functions within the NeuralNetwork class.
 """
 
 import numpy as np
+from scipy.special import erf
+
+# CONSTANTS
+SQRT_2 = np.sqrt(2.0)
+INV_SQRT_2PI = 1.0 / np.sqrt(2.0 * np.pi)
 
 def sigmoid(X):
-    return 1 / (1 + np.exp(-X))
+    return 1 / (1.0 + np.exp(-X))
 
 def sigmoid_prime(X):
-    return sigmoid(X) * (1 - sigmoid(X))
+    return sigmoid(X) * (1.0 - sigmoid(X))
 
 def relu(z):
     return np.maximum(0, z)
@@ -27,34 +32,39 @@ def leakyRelu(z):
     return np.maximum(0.01*z, z)
 
 def leakyRelu_prime(z):
-    return np.where(z>=0, 1, 0.01)
+    return np.where(z>=0, 1.0, 0.01)
 
 def gelu(z):
     return 0.5 * z * (
-            1 + np.tanh(
-                np.sqrt(2 / np.pi) * (z + 0.044715 * z**3) # using erf approximation
-            )
+            1.0 + erf(z / SQRT_2)
         )
     
 def gelu_prime(z):
-    a = np.sqrt(2.0 / np.pi)
-    T = np.tanh(a * (z + 0.044715 * z**3))
-    return (
-        0.5 * (1 + T) 
-        + 0.5 * z * (1 - T**2) * a * (1 + 3 * 0.044715 * z**2)
-    )
+    cdf = 0.5*(1.0 + erf(z / SQRT_2))
+    pdf = INV_SQRT_2PI * np.exp(-0.5*z**2.0)
+    return cdf * z * pdf
+
+def softmax(z):
+    exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
+    return exp_z / np.sum(exp_z, axis=1, keepdims=True)
+
+def softmax_prime(z): 
+    s = softmax(z)
+    return np.diag(s) - np.outer(s, s)
 
 # lookup dictionaries used by NeuralNetwork
 ACTIVATIONS = {
             "relu": relu,
             "leakyrelu": leakyRelu,
             "gelu": gelu,
-            "sigmoid": sigmoid
+            "sigmoid": sigmoid,
+            "softmax": softmax
         }
 
 ACTIVATIONS_PRIME = {
             "relu": relu_prime,
             "leakyrelu": leakyRelu_prime,
             "gelu": gelu_prime,
-            "sigmoid": sigmoid_prime
+            "sigmoid": sigmoid_prime,
+            "softmax": softmax_prime
         }

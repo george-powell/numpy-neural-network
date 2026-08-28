@@ -9,7 +9,7 @@ Features:
 """
 
 import numpy as np
-import utils # for BCE function.
+import utils 
 import activations
 
 class NeuralNetwork:
@@ -26,6 +26,8 @@ class NeuralNetwork:
     layer_activations : list[str]
         Activation function used after each layer transition. Must contain
         one fewer element than layer_sizes.
+    seed : int
+        Random number generator seed used in np.random.
 
     Notes
     -----
@@ -33,7 +35,7 @@ class NeuralNetwork:
     forward propagation is performed as X @ W.T + b.
     """
 
-    def __init__(self, layer_sizes, layer_activations):
+    def __init__(self, layer_sizes, layer_activations, loss, seed=10):
 
         if (len(layer_sizes) != len(layer_activations) + 1):
             raise ValueError(
@@ -44,6 +46,25 @@ class NeuralNetwork:
         self.layers = len(layer_sizes)
         self.layer_sizes = layer_sizes
         self.layer_activations = [a.lower() for a in layer_activations]
+        self.loss = loss.lower()
+        self.RNG = np.random.default_rng(seed)
+        
+        self.bce = False
+        self.cce = False
+
+        if self.loss == "bce":
+            self.bce = True
+            if self.layer_sizes[-1] != 1:
+                raise ValueError("BCE requires exactly 1 output neuron.")
+            if self.layer_activations[-1] != "sigmoid":
+                raise ValueError("BCE requires a sigmoid output activation.")
+
+        elif self.loss == "cce":
+            self.cce = True
+            if self.layer_sizes[-1] < 2:
+                raise ValueError("CCE requires at least 2 output neurons.")
+            if self.layer_activations[-1] != "softmax":
+                raise ValueError("CCE requires a softmax output activation.")
 
         self.weights = []
         self.biases = []
@@ -51,9 +72,8 @@ class NeuralNetwork:
         for layer in range(self.layers - 1):
 
             # He intiialisation, suitable with ReLU-like activation functions.
-            W = np.random.randn(
-                self.layer_sizes[layer + 1], 
-                self.layer_sizes[layer]
+            W = self.RNG.standard_normal(
+                (self.layer_sizes[layer + 1], self.layer_sizes[layer])
             ) * np.sqrt(2 / self.layer_sizes[layer])
             self.weights.append(W)
             
@@ -92,12 +112,7 @@ class NeuralNetwork:
             raise ValueError(
                 "layer_sizes[0] does not equal the provided number of inputs."
             )
-        if (self.layer_sizes[-1] != 1):
-            raise ValueError(
-                "Only single neuron output currently supported"
-            )
             
-
         self.Zs = [X @ self.weights[0].T + self.biases[0]]
         self.As = [
             X, 
@@ -140,8 +155,6 @@ class NeuralNetwork:
 
             dW = (dZ.T @ self.As[layer]) / y.shape[0]
             db = (np.sum(dZ, axis=0)) / y.shape[0]
-
-            optimiser.step(self, layer, dW, db)
             
             if layer != 0:
                 
@@ -149,6 +162,8 @@ class NeuralNetwork:
                 dZ = dA * activations.ACTIVATIONS_PRIME[
                     self.layer_activations[layer - 1]
                     ](self.Zs[layer - 1])
+
+            optimiser.step(self, layer, dW, db)
 
 
     def fit(self, X, y, epochs, batch_size, optimiser):
@@ -171,23 +186,27 @@ class NeuralNetwork:
         Returns
         -------
         list[float]
-            Binary cross-entropy loss after each epoch.
+            loss after each epoch.
         """
-        
-        # standardise input features.
-        X = (X - X.mean(axis=0)) / X.std(axis=0)
 
-        # ensure shape of (n_samples, 1) to prevent broadcasting 
-        # producing an unintended (n_samples, n_samples) array.
-        y = y.reshape(-1, 1)
-
+        if self.loss in ["bce", "binary cross entropy", "binary_cross_entropy"]:
+            y = y.reshape(-1,1)
+        elif self.loss in ["cce", "categorical cross entropy", "categorical_cross_entropy"]:
+            
+            # convert integer targets to the equivalent 2D one-hot matrix
+            if y.ndim == 1 or (y.ndim == 2 and y.shape[1] == 1):
+                y = y.squeeze() 
+                y = np.eye(self.layer_sizes[-1])[y]
+        else:
+            raise ValueError("Only binary or categorical cross entrophy allowed. enter 'BCE' or 'CCE'.")
+            
         samples = X.shape[0]
         loss_data = []
 
         for epoch in range(epochs):
 
             # shuffle dataset at beginning of each epoch.
-            indicies = np.random.permutation(samples)
+            indicies = self.RNG.permutation(samples)
 
             X_shuffled = X[indicies]
             y_shuffled = y[indicies]
@@ -207,7 +226,40 @@ class NeuralNetwork:
 
             # evaluate loss of complete training dataset for visualisation
             An = self.forward(X)
-            loss = utils.binary_cross_entropy(y, An)
+            if self.loss in ["bce", "binary cross entropy", "binary_cross_entropy"]:
+                loss = utils.binary_cross_entropy(y, An)
+            else:
+                loss = utils.categorical_cross_entropy(y, An)
+            
             loss_data.append(loss)
 
         return loss_data
+
+    def test(self, X, y):
+        """
+        Evaluate classification accuracy on unseen data.
+
+        Parameters
+        ----------
+        X : np.ndarray
+            Test inputs with shape (n_samples, n_features).
+        y : np.ndarray
+            True binary labels.
+
+        Returns
+        -------
+        Classifiation accuracy as a probability.
+        
+        """
+        if self.bce:
+            A = self.forward(X)
+            predictions = (A >= 0.5).astype(int).ravel()
+            y = y.ravel()
+
+        elif self.cce:
+            A = self.forward(X)
+            predictions = np.argmax(A, axis=1)
+
+        accuracy = np.mean(predictions == y)
+
+        return accuracy

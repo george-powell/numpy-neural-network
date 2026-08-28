@@ -35,7 +35,12 @@ def binary_cross_entropy(y, A):
         y * np.log(A) + 
         (1 - y) * np.log(1 - A)
     )
-    
+
+def categorical_cross_entropy(y, A):
+    eps = 1e-12
+    A = np.clip(A, eps, 1.0 - eps)
+    return -np.mean(np.sum(y * np.log(A), axis=1))
+
 def plot_log_loss(data):
     """
     Plots training loss data on a logarythmic y-axis.
@@ -96,7 +101,7 @@ def plot_decision_boundary(X, y, model):
     )
 
     plt.title("Decision Boundary")
-    plt.xlabel("Input 1")
-    plt.ylabel("Input 2")
+    plt.xlabel("Feature 1")
+    plt.ylabel("Feature 2")
 
     plt.show()
