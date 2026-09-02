@@ -8,9 +8,8 @@ The repository also contains a sequence of notebooks documenting the learning pr
 
 ## Features
 
-* Arbitrary number of layers and neurons
-* Configurable activation functions
-
+* Configurable layers and neurons
+* Configurable activation functions including:
   * ReLU
   * Leaky ReLU
   * GELU
@@ -25,6 +24,10 @@ The repository also contains a sequence of notebooks documenting the learning pr
   * Stochastic Gradient Descent (SGD)
   * Momentum
   * Adam
+* Multiple initialisation techniques:
+  * He
+  * Uniform Xavier
+  * Normal Xavier
 * Binary and categorical cross-entropy loss
 * Reproducible random initialisation and mini-batch shuffling through a configurable random seed
 
