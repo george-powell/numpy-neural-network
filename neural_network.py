@@ -33,9 +33,10 @@ class NeuralNetwork:
     -----
     Weights use the convention W.shape = (n_output, n_input), so that
     forward propagation is performed as X @ W.T + b.
+    He initialisation and random seed of 10 set by default.
     """
 
-    def __init__(self, layer_sizes, layer_activations, loss, seed=10):
+    def __init__(self, layer_sizes, layer_activations, loss, initialisation="He", seed=10):
 
         if (len(layer_sizes) != len(layer_activations) + 1):
             raise ValueError(
@@ -43,10 +44,10 @@ class NeuralNetwork:
                 "Check size of layer_sizes and layer_activations."
             )
             
-        self.layers = len(layer_sizes)
         self.layer_sizes = layer_sizes
         self.layer_activations = [a.lower() for a in layer_activations]
         self.loss = loss.lower()
+        self.initialisation = initialisation
         self.RNG = np.random.default_rng(seed)
         
         self.bce = False
@@ -57,28 +58,17 @@ class NeuralNetwork:
             if self.layer_sizes[-1] != 1:
                 raise ValueError("BCE requires exactly 1 output neuron.")
             if self.layer_activations[-1] != "sigmoid":
-                raise ValueError("BCE requires a sigmoid output activation.")
+                raise ValueError("BCE only supports sigmoid output activation.")
 
         elif self.loss == "cce":
             self.cce = True
             if self.layer_sizes[-1] < 2:
-                raise ValueError("CCE requires at least 2 output neurons.")
+                raise ValueError("Performing single-class classification with CCE")
             if self.layer_activations[-1] != "softmax":
-                raise ValueError("CCE requires a softmax output activation.")
+                raise ValueError("CCE only supports softmax output activation.")
 
-        self.weights = []
-        self.biases = []
-
-        for layer in range(self.layers - 1):
-
-            # He intiialisation, suitable with ReLU-like activation functions.
-            W = self.RNG.standard_normal(
-                (self.layer_sizes[layer + 1], self.layer_sizes[layer])
-            ) * np.sqrt(2 / self.layer_sizes[layer])
-            self.weights.append(W)
-            
-            b = (np.zeros(self.layer_sizes[layer + 1]))
-            self.biases.append(b)
+        # Initialising weights and biases
+        self.weights, self.biases = getattr(utils, initialisation)(self.layer_sizes, self.RNG)
 
         # Optimiser state. (Momentum & Adam)
         # Maintained by optimiser classes during training.
@@ -121,7 +111,7 @@ class NeuralNetwork:
                 ](self.Zs[0])
         ]
         
-        for layer in range(self.layers - 2):
+        for layer in range(len(self.layer_sizes) - 2):
             
             Z = self.As[layer + 1] @ self.weights[layer + 1].T + self.biases[layer + 1]
             self.Zs.append(Z)
