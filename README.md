@@ -90,7 +90,7 @@ Overall, the experiment demonstrates that the implementation is capable of learn
 ### MNIST Dataset &mdash; Optimiser Comparison
 The **MNIST Dataset** is used to compare **SGD, Momentum and Adam** in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py) with plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/).
 
-The experiment uses three otherwise identical networks, varying only the optimisation algorithm. **5-fold stratified cross-validation** is used on 10% of the standardised dataset to compare the accuracy and spread of each network. The dataset is then shuffled and **split into training and test sets**. Finally, another set of otherwise identical models are trained then tested on the same 10% subset.
+The experiment uses three otherwise identical networks, varying only the optimisation algorithm. **5-fold stratified cross-validation** is performed on a subset of **6,000 examples** from the official MNIST training set. A separate subset of **1,000 examples** from the official MNIST test set is then used for final evaluation. Each optimiser is trained on the full 6,000-example training subset before being evaluated on the held-out test subset.
 
 The experiment measures:
 * Mean cross-validation accuracy
