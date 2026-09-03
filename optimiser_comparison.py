@@ -4,11 +4,6 @@ How does the choice of optimisation algorithm affect neural-network performance?
 This script trains otherwise identical networks on 10% of the MNIST handwritten
 digits dataset's training set with SGD, Momentum and Adam optimisers.
 
-The dataset contains 150 samples of iris flowers with 4 features/inputs:
-sepal length, sepal width, petal length and petal width. Given this
-information, the network classifies datapoints into one of three classes:
-Setosa, Versicolor or Virginica.
-
 The three models are tested by 5-fold stratified cross-validation on the
 entire dataset, with the mean accuracy and standard deviation for each
 optimiser outputted.
