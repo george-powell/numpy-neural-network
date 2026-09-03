@@ -98,10 +98,11 @@ The experiment measures:
 * Final test accuracy
 
 Results:
--
--
--
-
+| Optimiser | Mean CV Accuracy | Std. Deviation | Test Accuracy |
+|-----------|:----------------:|:---------------:|:--------------:|
+| SGD       | 0.687             | ±0.100           | 0.833           |
+| Momentum  | 0.893             | ±0.039           | 1.000           |
+| Adam      | 0.953             | ±0.034           | 1.000           |
 
 This demonstration of how optimiser choice can affect neural network training and performance illustrates how parameters can be compared in a controlled manner in order to determine the appropriate architecture of a network specific to a dataset. 
 
