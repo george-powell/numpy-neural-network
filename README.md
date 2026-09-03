@@ -2,7 +2,7 @@
 
 A small neural network framework built using only **Python and NumPy**, with no machine-learning libraries used to implement the models. The project was developed to understand the mathematics and implementation behind neural networks. 
 
-The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_visualisation.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_visualisation.py) with the plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). The Iris dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam** optimisers on otherwise identical models. 
+The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py) with the plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). The Iris dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam** optimisers on otherwise identical models. 
 
 The repository also contains a sequence of notebooks documenting the learning progression from linear regression and gradient descent to a 2-layer Multilayer Perceptron.
 
@@ -90,12 +90,18 @@ Overall, the experiment demonstrates that the implementation is capable of learn
 ### Iris-Dataset &mdash; Optimiser Comparison
 The **Iris Dataset** from `scikt-learn` is used to compare **SGD, Momentum and Adam**.
 
-The experiment uses three otherwise identical networks, varying only the optimisation algorithm. The dataset is standardised, shuffled and split into training and test sets. **4-fold stratified cross-validation** is then used on the training set to compare the accuracy and spread of each network. Finally, the most accurate optimiser in the experiment at 0.90, Adam, is trained on the entire training set and then tested on the unseen test set, yielding an accuracy of 1.00.
+The experiment uses three otherwise identical networks, varying only the optimisation algorithm. **5-fold stratified cross-validation** is used on the standardised dataset to compare the accuracy and spread of each network. The dataset is then shuffled and split into training and test sets. Finally, another set of otherwise identical models are trained on the entire training set and then tested on the test set.
 
 The experiment measures:
 * Mean cross-validation accuracy
 * Accuracy standard deviation across folds
 * Final test accuracy
+
+Results:
+-
+-
+-
+
 
 This demonstration of how optimiser choice can affect neural network training and performance illustrates how parameters can be compared in a controlled manner in order to determine the appropriate architecture of a network specific to a dataset. 
 
@@ -104,29 +110,20 @@ The experiment also demonstrates the network's ability to perform **multi-class 
 ## Project Structure
 
 ```text
-Neural_network/
-├── neural_network.py       # Neural network architecture and training
-├── optimisers.py           # SGD, Momentum and Adam
-├── activations.py          # Activation functions and derivatives
-├── utils.py                # Loss functions and visualisation
-├── sample_data.py          # Example dataset
-├── main.ipynb              # Main demonstration and experiments
-├── notebooks/              # Earlier implementations and learning steps
-│   ├── _1_linear_regression.ipynb
-│   ├── _2_g_des_lin_reg.ipynb
-│   ├── _3_logistic_regression.ipynb
-│   └── _4_backprob_neuralnetwork.ipynb
+├── poc_classification.py
+├── optimiser_comparison.py
+├── visualisations/              
+├── src/              
+│   ├── neural_network.py       # Neural network architecture and training
+│   ├── optimisers.py           # SGD, Momentum and Adam
+│   ├── activations.py          # Activation functions and derivatives
+│   ├── initialisations         # He, Uniform Xavier, Normal Xavier
+│   ├── loss_functions          # Binary and categorical cross entropy
+│   ├── visualisation_functions # Decision boundary and log loss plots
+│   └── sample_data.py          # Example dataset
 ├── requirements.txt
 └── README.md
 ```
-## Learning Progression
-
-The `notebooks/` directory contains the key progression steps (pre-requisite learning) used to learn how to build the final implementation:
-
-1. Linear regression
-2. Gradient descent
-3. Logistic regression
-4. Neural network with backpropagation
 
 ## Purpose
 
@@ -141,13 +138,16 @@ The implementation focuses on:
 * Backpropagation
 * Numerical optimisation
 
-The next stage of the project is to build **self-attention and transformer components**.
+I am currently working on: **learning self-attention and transformer components**
 
 ## Requirements
 
 * Python 3
 * NumPy
 * Matplotlib
+* pandas
+* scipy
+* scikit-learn
 
 Install the dependencies with:
 
@@ -157,4 +157,4 @@ pip install -r requirements.txt
 
 ## Limitations
 
-This implementation is purely educational, rather than production-oriented. Hence, it lacks GPU acceleration or the optimisation and numerical safeguards found in established machine-learning frameworks, instead focusing solely on being digestible to learners.
+This implementation is purely educational, rather than production-oriented. Hence, it lacks GPU acceleration or the optimisation and numerical safeguards found in established machine-learning frameworks, instead focusing solely on being digestible to learners. On this topic, the sentence transformer project will use CUDA GPU acceleration to help computation.
