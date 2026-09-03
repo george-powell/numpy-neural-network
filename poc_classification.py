@@ -22,11 +22,7 @@ os.makedirs(visualisations_path, exist_ok=True)
 # import sample data
 X = sample_data.X
 y = sample_data.y
-
-#################################
-# BUILDING AND TRAINING THE MODEL
-#################################
-
+print("-"*10, "BUILDING AND TRAINING THE MODEL", "-"*10)
 # parameters
 epochs = 2000
 batch_size = 16
@@ -54,11 +50,9 @@ loss_data, checkpoints = model.fit(
     optimiser=Adam(),
     checkpoint_interval=50
 )
+print("-"*10, "BUILDING AND TRAINING COMPLETE", "-"*10)
 
-#################################
-# VISUALISATION
-#################################
-
+print("-"*10, "PERFORMING VISUALISATIONS", "-"*10)
 # to store plot images for each interval
 frames = []
 
@@ -102,3 +96,5 @@ fig.savefig(
 )
 
 plt.close(fig)
+
+print("-"*10, "VISUALISATIONS COMPLETE", "-"*10)

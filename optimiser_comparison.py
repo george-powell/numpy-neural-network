@@ -1,9 +1,8 @@
 """
 How does the choice of optimisation algorithm affect neural-network performance?
 
-This script trains otherwise identical networks on the tabular Iris dataset
-from scikit-learn with SGD, Momentum and Adam optimisers and quantifies the
-differences in accuracy.
+This script trains otherwise identical networks on 10% of the MNIST handwritten
+digits dataset's training set with SGD, Momentum and Adam optimisers.
 
 The dataset contains 150 samples of iris flowers with 4 features/inputs:
 sepal length, sepal width, petal length and petal width. Given this
@@ -25,7 +24,7 @@ Note: scikit-learn used for creating the stratified folds and splitting data int
 # importing dependencies
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris
+from tensorflow.keras.datasets import mnist
 from sklearn.model_selection import train_test_split, StratifiedKFold
 import pandas as pd
 import os
@@ -34,27 +33,47 @@ import src.visualisation_functions as visualisation_functions
 from src.neural_network import NeuralNetwork
 from src.optimisers import SGD, Momentum, Adam
 
-
 # set current working directory as base for file paths
 pwd = os.getcwd()
 visualisations_path = os.path.join(pwd, "visualisations")
 os.makedirs(visualisations_path, exist_ok=True)
 
 
-# import Iris dataset
-iris = load_iris()
-X = iris.data
-y = iris.target
+# import MNIST dataset
+(X_train, y_train), (X_test, y_test) = mnist.load_data()
 
+X_train = X_train[:6000] / 255.0
+X_test = X_test[:1000] / 255.0
+
+y_train = y_train[:6000]
+y_test = y_test[:1000]
+
+# display first 5 MNIST handwritten digit images
+plt.figure(figsize=(15, 3))
+for i in range(5):
+    plt.subplot(1, 5, i + 1)
+    plt.imshow(X_train[i], cmap="gray")
+    plt.title(f"Label: {y_train[i]}")
+    plt.axis("off")
+plt.tight_layout()
+plt.show()
+
+# reshape X matrix -> vector
+X_train = X_train.reshape(X_train.shape[0], -1)
+X_test = X_test.reshape(X_test.shape[0], -1)
+print("--------------------------------")
+print("Training data shape:", X_train.shape)
+print("Testing data shape:", X_test.shape)
+print("--------------------------------")
 
 # parameters
-epochs = 500
-batch_size = 30
+epochs = 50
+batch_size = 100
 seed = 10
 
 # layer architecture and activations
-layer_architecture = [4, 9, 6, 6, 3]
-activations = ["gelu", "gelu", "gelu", "softmax"]
+layer_architecture = [784, 128, 64, 10]
+activations = ["ReLU", "ReLU", "Softmax"]
 
 optimisers = [SGD, Momentum, Adam]
 
@@ -81,21 +100,14 @@ for optimiser_class in optimisers:
 
     fold_accuracy = []
 
-    for fold, (train_indices, test_indices) in enumerate(skf.split(X, y)):
+    for fold, (train_indices, test_indices) in enumerate(skf.split(X_train, y_train)):
 
         # split entire dataset into current training and validation folds
-        X_train = X[train_indices]
-        y_train = y[train_indices]
+        Xf_train = X_train[train_indices]
+        yf_train = y_train[train_indices]
 
-        X_test = X[test_indices]
-        y_test = y[test_indices]
-
-        # standardise using ONLY the current training fold
-        X_train_mean = X_train.mean(axis=0)
-        X_train_std = X_train.std(axis=0)
-
-        X_train = (X_train - X_train_mean) / X_train_std
-        X_test = (X_test - X_train_mean) / X_train_std
+        Xf_test = X_train[test_indices]
+        yf_test = y_train[test_indices]
 
         # initialise model
         model = NeuralNetwork(
@@ -108,8 +120,8 @@ for optimiser_class in optimisers:
 
         # train model
         model.fit(
-            X_train,
-            y_train,
+            Xf_train,
+            yf_train,
             epochs,
             batch_size,
             optimiser_class()
@@ -117,8 +129,8 @@ for optimiser_class in optimisers:
 
         # evaluate model on validation fold
         model_accuracy = model.test(
-            X_test,
-            y_test
+            Xf_test,
+            yf_test
         )
 
         fold_accuracy.append(model_accuracy)
@@ -139,16 +151,6 @@ for optimiser_class in optimisers:
 
 print("\n5-Fold Cross-Validation Results")
 print("--------------------------------")
-
-for optimiser, row in optimiser_performance_df.iterrows():
-
-    print(
-        f"{optimiser:<10} "
-        f"Mean Accuracy: {row['Mean CV Accuracy']:.3f} "
-        f"+/- {row['Standard Deviation']:.3f}"
-    )
-
-print("\n")
 print(optimiser_performance_df)
 
 
@@ -156,28 +158,7 @@ print(optimiser_performance_df)
 # TRAIN / TEST EXPERIMENT
 #################################
 
-# shuffle and split the entire dataset into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=seed,
-    stratify=y
-)
-
-# standardise using ONLY the training data
-X_train_mean = X_train.mean(axis=0)
-X_train_std = X_train.std(axis=0)
-
-X_train = (X_train - X_train_mean) / X_train_std
-X_test = (X_test - X_train_mean) / X_train_std
-
-
-#################################
-# TRAINING AND TEST RESULTS
-#################################
-
-print("Train/Test Results")
+print("\nTrain/Test Results")
 print("------------------")
 
 for optimiser_class in optimisers:
