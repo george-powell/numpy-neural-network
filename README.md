@@ -1,8 +1,8 @@
 # NumPy Neural Network
 
-A small neural network framework built using only **Python and NumPy**, with no machine-learning libraries used to implement the models. The project was developed to understand the mathematics and implementation behind neural networks. 
+A small neural network framework built using only **Python and NumPy**, with no machine-learning libraries used to implement the models. The project was developed to understand the mathematical foundations and implementation of neural networks. 
 
-The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py) with the plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). The Iris dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam** optimisers on otherwise identical models using **5-fold stratified cross-validation and test/train** in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py) with plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). 
+The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py). The Iris dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam.** The three models have identical architectures and training conditions, with only the optimiser varied. Performance is evaluate using **5-fold stratified cross-validation**, followed by fresh models being evaluated on a test/train split, with code found in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py). The resulting visualisations from both problems are stored in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). 
 
 The repository also contains a sequence of notebooks documenting the learning progression from linear regression and gradient descent to a 2-layer Multilayer Perceptron.
 
@@ -87,10 +87,10 @@ In contrast, **GELU** applies a smooth, non-linear transformation to $z$, allowi
 Overall, the experiment demonstrates that the implementation is capable of learning non-linear classification boundaries and that the choice of activation function has a significant effect on the geometry and complexity of the learned boundary.
 
 
-### Iris-Dataset &mdash; Optimiser Comparison
-The **Iris Dataset** from `scikt-learn` is used to compare **SGD, Momentum and Adam** in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py) with plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/).
+### Iris Dataset &mdash; Optimiser Comparison
+The **Iris Dataset** from `scikit-learn` is used to compare **SGD, Momentum and Adam** in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py) with plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/).
 
-The experiment uses three otherwise identical networks, varying only the optimisation algorithm. **5-fold stratified cross-validation** is used on the standardised dataset to compare the accuracy and spread of each network. The dataset is then shuffled and split into training and test sets. Finally, another set of otherwise identical models are trained on the entire training set and then tested on the test set.
+The experiment uses three otherwise identical networks, varying only the optimisation algorithm. **5-fold stratified cross-validation** is used on the standardised dataset to compare the accuracy and spread of each network. The dataset is then shuffled and **split into training and test sets**. Finally, another set of otherwise identical models are trained on the entire training set and then tested on the test set.
 
 The experiment measures:
 * Mean cross-validation accuracy
@@ -104,7 +104,7 @@ Results:
 | Momentum  | 0.893             | ±0.039           | 1.000           |
 | Adam      | 0.953             | ±0.034           | 1.000           |
 
-This demonstration of how optimiser choice can affect neural network training and performance illustrates how parameters can be compared in a controlled manner in order to determine the appropriate architecture of a network specific to a dataset. 
+The experiment demonstrates how optimiser choice can affect neural network training and performance, while illustrating how controlled experiments can be used to compare different optimisation strategies under otherwise identical conditions.
 
 The experiment also demonstrates the network's ability to perform **multi-class classification** with an **arbitrary number of output neurons**, using a three-neuron softmax output layer and categorical cross-entropy. 
 
@@ -128,7 +128,7 @@ The experiment also demonstrates the network's ability to perform **multi-class 
 
 ## Purpose
 
-This project is part of a larger **from-scratch NumPy machine learning project** aimed at understanding the mathematical foundations of modern machine learning systems.
+This project is part of a larger **machine learning project built from scratch using NumPy** aimed at understanding the mathematical foundations of modern machine learning systems.
 
 The implementation focuses on:
 
@@ -158,4 +158,4 @@ pip install -r requirements.txt
 
 ## Limitations
 
-This implementation is purely educational, rather than production-oriented. Hence, it lacks GPU acceleration or the optimisation and numerical safeguards found in established machine-learning frameworks, instead focusing solely on being digestible to learners. On this topic, the sentence transformer project will use CUDA GPU acceleration to help computation.
+This implementation is purely educational, rather than production-oriented. Hence, it lacks GPU acceleration or the optimisation and numerical safeguards found in established machine-learning frameworks, instead prioritising clarity and accessibility over production-level performance.
