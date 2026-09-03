@@ -2,7 +2,7 @@
 
 A small neural network framework built using only **Python and NumPy**, with no machine-learning libraries used to implement the models. The project was developed to understand the mathematical foundations and implementation of neural networks. 
 
-The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py). The Iris dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam.** The three models have identical architectures and training conditions, with only the optimiser varied. Performance is evaluate using **5-fold stratified cross-validation**, followed by fresh models being evaluated on a test/train split, with code found in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py). The resulting visualisations from both problems are stored in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). 
+The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py). The MNIST handwritten digits dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam.** The three models have identical architectures and training conditions, with only the optimiser varied. Performance is evaluate using **5-fold stratified cross-validation**, followed by fresh models being evaluated on a test/train split, with code found in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py). The resulting visualisations from both problems are stored in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). 
 
 The repository also contains a sequence of notebooks documenting the learning progression from linear regression and gradient descent to a 2-layer Multilayer Perceptron.
 
@@ -87,10 +87,10 @@ In contrast, **GELU** applies a smooth, non-linear transformation to $z$, allowi
 Overall, the experiment demonstrates that the implementation is capable of learning non-linear classification boundaries and that the choice of activation function has a significant effect on the geometry and complexity of the learned boundary.
 
 
-### Iris Dataset &mdash; Optimiser Comparison
-The **Iris Dataset** from `scikit-learn` is used to compare **SGD, Momentum and Adam** in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py) with plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/).
+### MNIST Dataset &mdash; Optimiser Comparison
+The **MNIST Dataset** is used to compare **SGD, Momentum and Adam** in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py) with plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/).
 
-The experiment uses three otherwise identical networks, varying only the optimisation algorithm. **5-fold stratified cross-validation** is used on the standardised dataset to compare the accuracy and spread of each network. The dataset is then shuffled and **split into training and test sets**. Finally, another set of otherwise identical models are trained on the entire training set and then tested on the test set.
+The experiment uses three otherwise identical networks, varying only the optimisation algorithm. **5-fold stratified cross-validation** is used on 10% of the standardised dataset to compare the accuracy and spread of each network. The dataset is then shuffled and **split into training and test sets**. Finally, another set of otherwise identical models are trained then tested on the same 10% subset.
 
 The experiment measures:
 * Mean cross-validation accuracy
@@ -100,9 +100,9 @@ The experiment measures:
 Results:
 | Optimiser | Mean CV Accuracy | Std. Deviation | Test Accuracy |
 |-----------|:----------------:|:---------------:|:--------------:|
-| SGD       | 0.687             | ±0.100           | 0.833           |
-| Momentum  | 0.893             | ±0.039           | 1.000           |
-| Adam      | 0.953             | ±0.034           | 1.000           |
+| SGD       | 0.918             | ±0.004           | 0.896           |
+| Momentum  | 0.940             | ±0.006           | 0.937           |
+| Adam      | 0.950             | ±0.007           | 0.946           |
 
 The experiment demonstrates how optimiser choice can affect neural network training and performance, while illustrating how controlled experiments can be used to compare different optimisation strategies under otherwise identical conditions.
 
@@ -149,6 +149,7 @@ I am currently working on: **learning self-attention and transformer components*
 * pandas
 * scipy
 * scikit-learn
+* tensorflow (to load the MNIST dataset ONLY)
 
 Install the dependencies with:
 
