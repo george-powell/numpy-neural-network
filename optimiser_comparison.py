@@ -48,16 +48,6 @@ X_test = X_test[:1000] / 255.0
 y_train = y_train[:6000]
 y_test = y_test[:1000]
 
-# display first 5 MNIST handwritten digit images
-plt.figure(figsize=(15, 3))
-for i in range(5):
-    plt.subplot(1, 5, i + 1)
-    plt.imshow(X_train[i], cmap="gray")
-    plt.title(f"Label: {y_train[i]}")
-    plt.axis("off")
-plt.tight_layout()
-plt.show()
-
 # reshape X matrix -> vector
 X_train = X_train.reshape(X_train.shape[0], -1)
 X_test = X_test.reshape(X_test.shape[0], -1)
