@@ -52,7 +52,7 @@ The repository also contains a sequence of notebooks documenting the learning pr
 
 ### 2D Binary Classification — Decision Boundary
 
-A small two-feature binary classification problem was used as a proof of concept to validate the implementation of the neural network. The model was trained using backpropagation and gradient-based optimisation, with the training loss and evolution of the decision boundary visualised throughout training. The code lies in [`poc_visualisation.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_visualisation.py) with the plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/)
+A small two-feature binary classification problem was used as a proof of concept to validate the implementation of the neural network. The model was trained using backpropagation and gradient-based optimisation, with the training loss and evolution of the decision boundary visualised throughout training. The code lies in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py) with the plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/)
 
 The experiment demonstrates:
 
