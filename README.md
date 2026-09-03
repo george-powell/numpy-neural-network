@@ -2,7 +2,7 @@
 
 A small neural network framework built using only **Python and NumPy**, with no machine-learning libraries used to implement the models. The project was developed to understand the mathematics and implementation behind neural networks. 
 
-The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py) with the plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). The Iris dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam** optimisers on otherwise identical models. 
+The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py) with the plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). The Iris dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam** optimisers on otherwise identical models using **5-fold stratified cross-validation and test/train** in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py) with plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). 
 
 The repository also contains a sequence of notebooks documenting the learning progression from linear regression and gradient descent to a 2-layer Multilayer Perceptron.
 
@@ -88,7 +88,7 @@ Overall, the experiment demonstrates that the implementation is capable of learn
 
 
 ### Iris-Dataset &mdash; Optimiser Comparison
-The **Iris Dataset** from `scikt-learn` is used to compare **SGD, Momentum and Adam**.
+The **Iris Dataset** from `scikt-learn` is used to compare **SGD, Momentum and Adam** in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py) with plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/).
 
 The experiment uses three otherwise identical networks, varying only the optimisation algorithm. **5-fold stratified cross-validation** is used on the standardised dataset to compare the accuracy and spread of each network. The dataset is then shuffled and split into training and test sets. Finally, another set of otherwise identical models are trained on the entire training set and then tested on the test set.
 
