@@ -2,47 +2,90 @@
 
 A small neural network framework built using only **Python and NumPy**, with no machine-learning libraries used to implement the models. The project was developed to understand the mathematics and implementation behind neural networks. 
 
-The [`main.ipynb`](https://github.com/george-powell/numpy-neural-network/blob/main/main.ipynb) notebook demonstrates the framework on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary. The Iris dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam** optimisers, training and being tested while keeping network architecture and training procedure fixed. 
+The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_visualisation.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_visualisation.py) with the plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). The Iris dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam** optimisers on otherwise identical models. 
 
 The repository also contains a sequence of notebooks documenting the learning progression from linear regression and gradient descent to a 2-layer Multilayer Perceptron.
 
 ## Features
 
-* Configurable layers and neurons
-* Configurable activation functions including:
-  * ReLU
-  * Leaky ReLU
-  * GELU
-  * Sigmoid
-  * Softmax
+### Neural Network
+
+* Configurable layer architecture and number of neurons
 * Forward propagation
 * Backpropagation
 * Mini-batch training
 * Input normalisation
-* Multiple optimisation algorithms:
 
-  * Stochastic Gradient Descent (SGD)
-  * Momentum
-  * Adam
-* Multiple initialisation techniques:
-  * He
-  * Uniform Xavier
-  * Normal Xavier
-* Binary and categorical cross-entropy loss
-* Reproducible random initialisation and mini-batch shuffling through a configurable random seed
+### Activation Functions
+
+* ReLU
+* Leaky ReLU
+* GELU
+* Sigmoid
+* Softmax
+
+### Optimisation
+
+* Stochastic Gradient Descent (SGD)
+* Momentum
+* Adam
+
+### Weight Initialisation
+
+* He initialisation
+* Uniform Xavier initialisation
+* Normal Xavier initialisation
+
+### Loss Functions
+
+* Binary Cross-Entropy (BCE)
+* Categorical Cross-Entropy (CCE)
+
+### Reproducibility
+
+* Configurable random seed
+* Reproducible weight initialisation
+* Reproducible mini-batch shuffling
+
 
 ## Demonstrations
 
-The [`main.ipynb`](https://github.com/george-powell/numpy-neural-network/blob/main/main.ipynb) notebook provides practical demonstrations of the network on two classification problems, and how network parameters can be altered and compared in isolation.
+### 2D Binary Classification — Decision Boundary
 
-### 2D-classification &mdash; Decision Boundary
-A small 2-feature binary classification dataset used as a proof of concept. The network is trained on the data with the log-loss and decision boundary visualised to show the successful implementation. 
+A small two-feature binary classification problem was used as a proof of concept to validate the implementation of the neural network. The model was trained using backpropagation and gradient-based optimisation, with the training loss and evolution of the decision boundary visualised throughout training. The code lies in [`poc_visualisation.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_visualisation.py) with the plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/)
 
 The experiment demonstrates:
 
-* Forward and backward propagation working to learn a classification boundary
-* The effect of increasing the number of neurons on the decision boundary
-* The difference between the piecewise-linear boundaries produced by **ReLU** and the smooth non-linear boundaries produced by **GELU**
+* Forward and backward propagation successfully learning a classification boundary
+* The different decision-boundary geometries produced by **ReLU** and **GELU** activations
+* Successful classification of the training data
+
+#### Results
+
+The log-loss decreases consistently throughout training, indicating that the optimisation process is successfully adjusting the network's weights and biases to reduce the classification error.
+
+The decision-boundary animation shows how the model progressively learns the structure of the dataset. By the final checkpoint, the network correctly classifies all datapoints in this particular dataset.
+
+#### ReLU vs GELU
+
+Using **ReLU** in the hidden layers produces piecewise-linear decision boundaries. For a ReLU neuron, the activation changes at \(z=0\). With two input features,
+
+$$
+z = w_1x_1 + w_2x_2 + b = 0
+$$
+
+defines a straight-line boundary. Taking $x=x_1$ and $y=x_2$, this becomes
+
+$$
+y = -\frac{w_1}{w_2}x - \frac{b}{w_2}.
+$$
+
+Each ReLU neuron therefore introduces a linear boundary over the region in which it is active. Combining multiple ReLU neurons allows the network to construct a **piecewise-linear decision boundary**, as observed in the experiment.
+
+In contrast, **GELU** applies a smooth, non-linear transformation to $z$, allowing the network to produce smoother and more complex boundaries. On this small proof-of-concept dataset, GELU produced noticeably more complex decision boundaries and showed a greater tendency towards overfitting than ReLU.
+
+Overall, the experiment demonstrates that the implementation is capable of learning non-linear classification boundaries and that the choice of activation function has a significant effect on the geometry and complexity of the learned boundary.
+
 
 ### Iris-Dataset &mdash; Optimiser Comparison
 The **Iris Dataset** from `scikt-learn` is used to compare **SGD, Momentum and Adam**.

@@ -9,8 +9,9 @@ Features:
 """
 
 import numpy as np
-import utils 
-import activations
+import src.initialisations as initialisations
+import src.loss_functions as loss_functions
+import src.activations as activations
 
 class NeuralNetwork:
     """
@@ -68,7 +69,7 @@ class NeuralNetwork:
                 raise ValueError("CCE only supports softmax output activation.")
 
         # Initialising weights and biases
-        self.weights, self.biases = getattr(utils, initialisation)(self.layer_sizes, self.RNG)
+        self.weights, self.biases = getattr(initialisations, initialisation)(self.layer_sizes, self.RNG)
 
         # Optimiser state. (Momentum & Adam)
         # Maintained by optimiser classes during training.
@@ -156,7 +157,7 @@ class NeuralNetwork:
             optimiser.step(self, layer, dW, db)
 
 
-    def fit(self, X, y, epochs, batch_size, optimiser):
+    def fit(self, X, y, epochs, batch_size, optimiser, checkpoint_interval=None):
         """
         Train the network using mini-batch gradient descent with specified optimiser.
 
@@ -192,6 +193,7 @@ class NeuralNetwork:
             
         samples = X.shape[0]
         loss_data = []
+        checkpoints = {}
 
         for epoch in range(epochs):
 
@@ -217,14 +219,30 @@ class NeuralNetwork:
             # evaluate loss of complete training dataset for visualisation
             An = self.forward(X)
             if self.loss in ["bce", "binary cross entropy", "binary_cross_entropy"]:
-                loss = utils.binary_cross_entropy(y, An)
+                loss = loss_functions.binary_cross_entropy(y, An)
             else:
-                loss = utils.categorical_cross_entropy(y, An)
+                loss = loss_functions.categorical_cross_entropy(y, An)
             
             loss_data.append(loss)
 
-        return loss_data
+            if checkpoint_interval is not None and (epoch + 1) % checkpoint_interval == 0:
 
+                checkpoints[epoch + 1] = {
+                    "weights": [W.copy() for W in self.weights],
+                    "biases": [b.copy() for b in self.biases]
+                }
+        return loss_data, checkpoints
+
+    
+    def load_checkpoint(self, checkpoint):
+        """
+        Load a previously saved model checkpoint.
+        """
+
+        self.weights = [W.copy() for W in checkpoint["weights"]]
+        self.biases = [b.copy() for b in checkpoint["biases"]]
+
+    
     def test(self, X, y):
         """
         Evaluate classification accuracy on unseen data.
