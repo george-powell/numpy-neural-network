@@ -1,8 +1,8 @@
 # NumPy Neural Network
 
-A **multi-layer perceptron neural network framework** built using only **Python and NumPy**, with no machine-learning libraries used to implement the models. The project was developed to understand the mathematical foundations and implementation of neural networks. 
+A **multi-layer perceptron neural network framework** built using only **Python and NumPy**, with no machine-learning libraries used to implement the models. The project was developed to understand the mathematical foundations and implementation of neural networks. With tuned learning rates, SGD, Momentum and Adam reach ~97.7–98.0% accuracy on the MNIST handwritten digits dataset. 
 
-The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py). The MNIST handwritten digits dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam** in [`main.py`](https://github.com/george-powell/numpy-neural-network/blob/main/main.py). The three models have identical architectures and training conditions, with only the optimiser varied and learning rate tuned. After tuning the learning rate, each model is trained and tested on the entire MNIST dataset 5 times with different seeds. Visualisations and results are stored in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/) and [`results`](https://github.com/george-powell/numpy-neural-network/blob/main/results/). 
+The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py). The MNIST handwritten digits dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam** in [`main.py`](https://github.com/george-powell/numpy-neural-network/blob/main/main.py). The three models have identical architectures and training conditions, with only the optimiser varied and learning rate tuned. After tuning the learning rate, each model is trained on the 60,000-image training set and tested on the 10,000-image test set; repeated for 5 different seeds. Visualisations and results are stored in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/) and [`results`](https://github.com/george-powell/numpy-neural-network/blob/main/results/). 
 
 ## Features
 
@@ -119,13 +119,13 @@ The experiment also demonstrates the network's ability to perform **multi-class 
 ├── visualisations/
 ├── results/            
 ├── src/              
-│   ├── neural_network.py       # Neural network architecture and training
-│   ├── optimisers.py           # SGD, Momentum and Adam
-│   ├── activations.py          # Activation functions and derivatives
-│   ├── initialisations         # He, Uniform Xavier, Normal Xavier
-│   ├── loss_functions          # Binary and categorical cross entropy
-│   ├── visualisation_functions # Decision boundary and log loss plots
-│   └── sample_data.py          # Example dataset
+│   ├── neural_network.py           # Neural network architecture and training
+│   ├── optimisers.py               # SGD, Momentum and Adam
+│   ├── activations.py              # Activation functions and derivatives
+│   ├── initialisations.py          # He, Uniform Xavier, Normal Xavier
+│   ├── loss_functions.py           # Binary and categorical cross entropy
+│   ├── visualisation_functions.py  # Decision boundary and log loss plots
+│   └── sample_data.py              # Example dataset
 ├── requirements.txt
 └── README.md
 ```
@@ -148,4 +148,4 @@ pip install -r requirements.txt
 
 ## Limitations
 
-This implementation is purely educational, rather than production-oriented. Hence, it lacks GPU acceleration or the optimisation and numerical safeguards found in established machine-learning frameworks, instead prioritising clarity and accessibility over production-level performance. The framework only has support for MLP's. Other neural networks, such as CNN's or random forests are not supported. 
+This implementation is purely educational, rather than production-oriented. Hence, it lacks GPU acceleration or the optimisation and numerical safeguards found in established machine-learning frameworks, instead prioritising clarity and accessibility over production-level performance. The framework only has support for MLP's; other architectures such as CNN's are not supported. 
