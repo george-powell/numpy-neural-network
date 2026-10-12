@@ -1,10 +1,8 @@
 # NumPy Neural Network
 
-A small neural network framework built using only **Python and NumPy**, with no machine-learning libraries used to implement the models. The project was developed to understand the mathematical foundations and implementation of neural networks. 
+A **multi-layer perceptron neural network framework** built using only **Python and NumPy**, with no machine-learning libraries used to implement the models. The project was developed to understand the mathematical foundations and implementation of neural networks. 
 
-The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py). The MNIST handwritten digits dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam.** The three models have identical architectures and training conditions, with only the optimiser varied. Performance is evaluate using **5-fold stratified cross-validation**, followed by fresh models being evaluated on a test/train split, with code found in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py). The resulting visualisations from both problems are stored in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/). 
-
-The repository also contains a sequence of notebooks documenting the learning progression from linear regression and gradient descent to a 2-layer Multilayer Perceptron.
+The framework is tested on two classification problems. A simple 2-feature dataset is first used to visualise and analyse the learned decision boundary in [`poc_classification.py`](https://github.com/george-powell/numpy-neural-network/blob/main/poc_classification.py). The MNIST handwritten digits dataset is then used to conduct a controlled comparison of **SGD, Momentum and Adam** in [`main.py`](https://github.com/george-powell/numpy-neural-network/blob/main/main.py). The three models have identical architectures and training conditions, with only the optimiser varied and learning rate tuned. After tuning the learning rate, each model is trained and tested on the entire MNIST dataset 5 times with different seeds. Visualisations and results are stored in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/) and [`results`](https://github.com/george-powell/numpy-neural-network/blob/main/results/). 
 
 ## Features
 
@@ -43,8 +41,7 @@ The repository also contains a sequence of notebooks documenting the learning pr
 
 ### Reproducibility
 
-* Configurable random seed
-* Reproducible weight initialisation
+* Reproducible weight initialisation with random seed being passed in
 * Reproducible mini-batch shuffling
 
 
@@ -88,32 +85,39 @@ Overall, the experiment demonstrates that the implementation is capable of learn
 
 
 ### MNIST Dataset &mdash; Optimiser Comparison
-The **MNIST Dataset** is used to compare **SGD, Momentum and Adam** in [`optimiser_comparison.py`](https://github.com/george-powell/numpy-neural-network/blob/main/optimiser_comparison.py) with plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/).
+The **MNIST Dataset** is used to compare **SGD, Momentum and Adam** in [`main.py`](https://github.com/george-powell/numpy-neural-network/blob/main/main.py) with plots in [`visualisations`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/), and results in [`results`](https://github.com/george-powell/numpy-neural-network/blob/main/results/).
 
-The experiment uses three otherwise identical networks, varying only the optimisation algorithm. **5-fold stratified cross-validation** is performed on a subset of **6,000 examples** from the official MNIST training set. A separate subset of **1,000 examples** from the official MNIST test set is then used for final evaluation. Each optimiser is trained on the full 6,000-example training subset before being evaluated on the held-out test subset.
+The experiment uses three otherwise identical networks (`784-128-64-10`, ReLU hidden layers, softmax output, categorical cross-entropy, He initialisation, 25 epochs, batch size 100), varying only the optimisation algorithm and its learning rate. Inputs are standardised using training-set statistics only.
 
-The experiment measures:
-* Mean cross-validation accuracy
-* Accuracy standard deviation across folds
-* Final test accuracy
+The experiment has two stages:
+1. **Learning-rate tuning:** the 60,000 official training images are split into a stratified training set (54,000) and validation set (6,000). Each optimiser is trained once for every learning rate in its own 5-value grid, and the learning rate with the highest validation accuracy is selected. The test set is not used at this stage.
+2. **Final evaluation:** each optimiser is retrained from scratch on all 60,000 training images with its selected learning rate, over 5 random seeds (weight initialisation and mini-batch order). Every run is evaluated once on the 10,000-image test set. The same seeds are used for every optimiser, so the runs can be compared as paired differences.
+
+**The experiment measures:**
+* Mean test accuracy across seeds
+* Accuracy standard deviation across seeds
+* Paired accuracy differences between optimisers
 
 Results:
-| Optimiser | Mean CV Accuracy | Std. Deviation | Test Accuracy |
-|-----------|:----------------:|:---------------:|:--------------:|
-| SGD       | 0.918             | ±0.004           | 0.896           |
-| Momentum  | 0.940             | ±0.006           | 0.937           |
-| Adam      | 0.950             | ±0.007           | 0.946           |
+| Optimiser | Selected Learning Rate | Mean Test Accuracy | Std. Deviation |
+|-----------|:----------------------:|:------------------:|:--------------:|
+| SGD       | 0.3                    | 0.9795             | ±0.0025        |
+| Momentum  | 0.03                   | 0.9790             | ±0.0041        |
+| Adam      | 0.0003                 | 0.9770             | ±0.0020        |
 
-The experiment demonstrates how optimiser choice can affect neural network training and performance, while illustrating how controlled experiments can be used to compare different optimisation strategies under otherwise identical conditions.
+Once each optimiser's learning rate is tuned, the three reach similar accuracy. The largest paired difference (SGD &minus; Adam) is +0.0025 ± 0.0032 across seeds, which is within seed-to-seed variation, so these results cannot separate the optimisers. The finite test set adds a further binomial standard error of about ±0.0014. Learning-rate choice mattered more than optimiser choice: for SGD, validation accuracy rose from 0.9695 at its default learning rate of 0.01 to 0.9782 at 0.3 (single runs). The full sweep is plotted in [`learning_rate_sensitivity.png`](https://github.com/george-powell/numpy-neural-network/blob/main/visualisations/learning_rate_sensitivity.png).
 
-The experiment also demonstrates the network's ability to perform **multi-class classification** with an **arbitrary number of output neurons**, using a three-neuron softmax output layer and categorical cross-entropy. 
+The experiment illustrates why optimisers must be compared with each learning rate tuned on held-out data and the test set used only once, rather than at shared default settings.
+
+The experiment also demonstrates the network's ability to perform **multi-class classification** with an **arbitrary number of output neurons**, using a ten-neuron softmax output layer and categorical cross-entropy.
 
 ## Project Structure
 
 ```text
 ├── poc_classification.py
-├── optimiser_comparison.py
-├── visualisations/              
+├── main.py
+├── visualisations/
+├── results/            
 ├── src/              
 │   ├── neural_network.py       # Neural network architecture and training
 │   ├── optimisers.py           # SGD, Momentum and Adam
@@ -125,21 +129,6 @@ The experiment also demonstrates the network's ability to perform **multi-class 
 ├── requirements.txt
 └── README.md
 ```
-
-## Purpose
-
-This project is part of a larger **machine learning project built from scratch using NumPy** aimed at understanding the mathematical foundations of modern machine learning systems.
-
-The implementation focuses on:
-
-* Linear algebra
-* Gradient-based optimisation
-* Probability and loss functions
-* Computational graphs
-* Backpropagation
-* Numerical optimisation
-
-I am currently working on: **learning self-attention and transformer components**
 
 ## Requirements
 
@@ -159,4 +148,4 @@ pip install -r requirements.txt
 
 ## Limitations
 
-This implementation is purely educational, rather than production-oriented. Hence, it lacks GPU acceleration or the optimisation and numerical safeguards found in established machine-learning frameworks, instead prioritising clarity and accessibility over production-level performance.
+This implementation is purely educational, rather than production-oriented. Hence, it lacks GPU acceleration or the optimisation and numerical safeguards found in established machine-learning frameworks, instead prioritising clarity and accessibility over production-level performance. The framework only has support for MLP's. Other neural networks, such as CNN's or random forests are not supported. 
