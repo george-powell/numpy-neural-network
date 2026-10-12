@@ -31,7 +31,7 @@ def plot_log_loss(data):
     )
 
     ax.set_title(f"Reduction in Loss over {len(data)} epochs")
-    ax.set_ylabel("Binary Cross-Entropy Loss")
+    ax.set_ylabel("Categorical Cross-Entropy Loss")
     ax.set_xlabel("Epoch")
     ax.legend()
 
